@@ -11,7 +11,6 @@ import { PrivacyRequestModel } from './privacyRequests'
 import { ProductModel } from './product'
 import { QuantityModel } from './quantity'
 import { RecycleModel } from './recycle'
-import { SecurityAnswerModel } from './securityAnswer'
 import { SecurityQuestionModel } from './securityQuestion'
 import { UserModel } from './user'
 import { WalletModel } from './wallet'
@@ -119,20 +118,6 @@ const relationsInit = (_sequelize: Sequelize) => {
       name: 'AddressId'
     }
   })
-
-  SecurityAnswerModel.belongsTo(UserModel, {
-    foreignKey: {
-      name: 'UserId'
-    }
-  })
-  SecurityAnswerModel.belongsTo(SecurityQuestionModel, {
-    constraints: true,
-    foreignKeyConstraint: true,
-    foreignKey: {
-      name: 'SecurityQuestionId'
-    }
-  })
-
   WalletModel.belongsTo(UserModel, {
     constraints: true,
     foreignKeyConstraint: true,

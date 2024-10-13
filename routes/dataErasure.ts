@@ -4,7 +4,6 @@
  */
 import express, { type NextFunction, type Request, type Response } from 'express'
 import path from 'path'
-import { SecurityAnswerModel } from '../models/securityAnswer'
 import { UserModel } from '../models/user'
 import { SecurityQuestionModel } from '../models/securityQuestion'
 import { PrivacyRequestModel } from '../models/privacyRequests'
@@ -14,40 +13,9 @@ const insecurity = require('../lib/insecurity')
 const challengeUtils = require('../lib/challengeUtils')
 const router = express.Router()
 
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
-router.get('/', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const loggedInUser = insecurity.authenticatedUsers.get(req.cookies.token)
-  if (!loggedInUser) {
-    next(new Error('Blocked illegal activity by ' + req.socket.remoteAddress))
-    return
-  }
-  const email = loggedInUser.data.email
-
-  try {
-    const answer = await SecurityAnswerModel.findOne({
-      include: [{
-        model: UserModel,
-        where: { email }
-      }]
-    })
-    if (answer == null) {
-      throw new Error('No answer found!')
-    }
-    const question = await SecurityQuestionModel.findByPk(answer.SecurityQuestionId)
-    if (question == null) {
-      throw new Error('No question found!')
-    }
-
-    res.render('dataErasureForm', { userEmail: email, securityQuestion: question.question })
-  } catch (error) {
-    next(error)
-  }
-})
-
 interface DataErasureRequestParams {
   layout?: string
   email: string
-  securityAnswer: string
 }
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises

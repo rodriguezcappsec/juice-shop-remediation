@@ -11,7 +11,6 @@ import { QuantityModel } from './models/quantity'
 import { CardModel } from './models/card'
 import { PrivacyRequestModel } from './models/privacyRequests'
 import { AddressModel } from './models/address'
-import { SecurityAnswerModel } from './models/securityAnswer'
 import { SecurityQuestionModel } from './models/securityQuestion'
 import { RecycleModel } from './models/recycle'
 import { ComplaintModel } from './models/complaint'
@@ -369,9 +368,6 @@ restoreOverwrittenFilesWithOriginals().then(() => {
   /* SecurityQuestions: Only GET list of questions allowed. */
   app.post('/api/SecurityQuestions', security.denyAll())
   app.use('/api/SecurityQuestions/:id', security.denyAll())
-  /* SecurityAnswers: Only POST of answer allowed. */
-  app.get('/api/SecurityAnswers', security.denyAll())
-  app.use('/api/SecurityAnswers/:id', security.denyAll())
   /* REST API */
   app.use('/rest/user/authentication-details', security.isAuthorized())
   app.use('/rest/basket/:id', security.isAuthorized())
@@ -467,7 +463,6 @@ restoreOverwrittenFilesWithOriginals().then(() => {
     { name: 'Complaint', exclude: [], model: ComplaintModel },
     { name: 'Recycle', exclude: [], model: RecycleModel },
     { name: 'SecurityQuestion', exclude: [], model: SecurityQuestionModel },
-    { name: 'SecurityAnswer', exclude: [], model: SecurityAnswerModel },
     { name: 'Address', exclude: [], model: AddressModel },
     { name: 'PrivacyRequest', exclude: [], model: PrivacyRequestModel },
     { name: 'Card', exclude: [], model: CardModel },
@@ -678,7 +673,7 @@ const uploadToDisk = multer({
   })
 })
 
-const expectedModels = ['Address', 'Basket', 'BasketItem', 'Captcha', 'Card', 'Challenge', 'Complaint', 'Delivery', 'Feedback', 'ImageCaptcha', 'Memory', 'PrivacyRequestModel', 'Product', 'Quantity', 'Recycle', 'SecurityAnswer', 'SecurityQuestion', 'User', 'Wallet']
+const expectedModels = ['Address', 'Basket', 'BasketItem', 'Captcha', 'Card', 'Challenge', 'Complaint', 'Delivery', 'Feedback', 'ImageCaptcha', 'Memory', 'PrivacyRequestModel', 'Product', 'Quantity', 'Recycle', 'SecurityQuestion', 'User', 'Wallet']
 while (!expectedModels.every(model => Object.keys(sequelize.models).includes(model))) {
   logger.info(`Entity models ${colors.bold(Object.keys(sequelize.models).length.toString())} of ${colors.bold(expectedModels.length.toString())} are initialized (${colors.yellow('WAITING')})`)
 }

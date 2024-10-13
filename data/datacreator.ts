@@ -16,7 +16,6 @@ import { MemoryModel } from '../models/memory'
 import { ProductModel } from '../models/product'
 import { QuantityModel } from '../models/quantity'
 import { RecycleModel } from '../models/recycle'
-import { SecurityAnswerModel } from '../models/securityAnswer'
 import { SecurityQuestionModel } from '../models/securityQuestion'
 import { UserModel } from '../models/user'
 import { WalletModel } from '../models/wallet'
@@ -117,7 +116,6 @@ async function createUsers () {
           lastLoginIp
         })
         datacache.users[key] = user
-        if (securityQuestion != null) await createSecurityAnswer(user.id, securityQuestion.id, securityQuestion.answer)
         if (feedback != null) await createFeedback(user.id, feedback.comment, feedback.rating, user.email)
         if (deletedFlag) await deleteUser(user.id)
         if (address != null) await createAddresses(user.id, address)
@@ -260,14 +258,6 @@ async function createMemories () {
         const imageUrl = memory.image
         tmpImageFileName = utils.extractFilename(memory.image)
         void utils.downloadToFile(imageUrl, 'frontend/dist/frontend/assets/public/images/uploads/' + tmpImageFileName)
-      }
-      if (memory.geoStalkingMetaSecurityQuestion && memory.geoStalkingMetaSecurityAnswer) {
-        await createSecurityAnswer(datacache.users.john.id, memory.geoStalkingMetaSecurityQuestion, memory.geoStalkingMetaSecurityAnswer)
-        memory.user = 'john'
-      }
-      if (memory.geoStalkingVisualSecurityQuestion && memory.geoStalkingVisualSecurityAnswer) {
-        await createSecurityAnswer(datacache.users.emma.id, memory.geoStalkingVisualSecurityQuestion, memory.geoStalkingVisualSecurityAnswer)
-        memory.user = 'emma'
       }
       if (!memory.user) {
         logger.warn(`Could not find user for memory ${memory.caption}!`)
@@ -612,12 +602,6 @@ async function createSecurityQuestions () {
       }
     })
   )
-}
-
-async function createSecurityAnswer (UserId: number, SecurityQuestionId: number, answer: string) {
-  return await SecurityAnswerModel.create({ SecurityQuestionId, UserId, answer }).catch((err: unknown) => {
-    logger.error(`Could not insert SecurityAnswer ${answer} mapped to UserId ${UserId}: ${utils.getErrorMessage(err)}`)
-  })
 }
 
 async function createOrders () {

@@ -19,7 +19,6 @@ import { ProductModelInit } from './product'
 import { QuantityModelInit } from './quantity'
 import { RecycleModelInit } from './recycle'
 import { relationsInit } from './relations'
-import { SecurityAnswerModelInit } from './securityAnswer'
 import { SecurityQuestionModelInit } from './securityQuestion'
 import { UserModelInit } from './user'
 import { WalletModelInit } from './wallet'
@@ -52,7 +51,6 @@ PrivacyRequestModelInit(sequelize)
 ProductModelInit(sequelize)
 QuantityModelInit(sequelize)
 RecycleModelInit(sequelize)
-SecurityAnswerModelInit(sequelize)
 SecurityQuestionModelInit(sequelize)
 UserModelInit(sequelize)
 WalletModelInit(sequelize)

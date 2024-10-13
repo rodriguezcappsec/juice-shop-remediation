@@ -45,7 +45,7 @@ export const hashPassword = (password: string) => {
   return argon2.hash(password, {
     type: argon2.argon2id,
   })
-    .then((hash: string) => {      
+    .then((hash: string) => {
       return hash;
     })
     .catch((err: any) => {
@@ -62,8 +62,6 @@ export const verifyPassword = async (hash: string, password: string): Promise<bo
   }
 }
 
-export const hmac = (data: string) => crypto.createHmac('sha256', 'pa4qacea4VK9t9nGv7yZtwmj').update(data).digest('hex')
-
 export const cutOffPoisonNullByte = (str: string) => {
   const nullByte = '%00'
   if (utils.contains(str, nullByte)) {
@@ -79,7 +77,7 @@ export const verify = (token: string) => token ? (jws.verify as ((token: string,
 export const decode = (token: string) => { return jws.decode(token)?.payload }
 
 export const sanitizeHtml = (html: string) => sanitizeHtmlLib(html)
-export const sanitizeLegacy = (input = '') => input.replace(/<(?:\w+)\W+?[\w]/gi, '')
+export const sanitizeLegacy = (input = '') => input.replace(/<(?:\w+)\W+?[\w]/gi, '') // insecure console.log(sanitizeLegacy("<<src='iimg src=\'est' onerror=alert(1) />"));
 export const sanitizeFilename = (filename: string) => sanitizeFilenameLib(filename)
 export const sanitizeSecure = (html: string): string => {
   const sanitized = sanitizeHtml(html)
@@ -141,25 +139,20 @@ function hasValidFormat(coupon: string) {
   return coupon.match(/(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[0-9]{2}-[0-9]{2}/)
 }
 
-// vuln-code-snippet start redirectCryptoCurrencyChallenge redirectChallenge
-export const redirectAllowlist = new Set([
-  'https://github.com/juice-shop/juice-shop',
-  'https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm', // vuln-code-snippet vuln-line redirectCryptoCurrencyChallenge
-  'https://explorer.dash.org/address/Xr556RzuwX6hg5EGpkybbv5RanJoZN17kW', // vuln-code-snippet vuln-line redirectCryptoCurrencyChallenge
-  'https://etherscan.io/address/0x0f933ab9fcaaa782d0279c300d73750e1311eae6', // vuln-code-snippet vuln-line redirectCryptoCurrencyChallenge
-  'http://shop.spreadshirt.com/juiceshop',
-  'http://shop.spreadshirt.de/juiceshop',
-  'https://www.stickeryou.com/products/owasp-juice-shop/794',
-  'http://leanpub.com/juice-shop'
-])
+const redirectAllowlist = [
+  /^https:\/\/github\.com\/juice-shop\/juice-shop$/,
+  /^https:\/\/blockchain\.info\/address\/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm$/,
+  /^https:\/\/explorer\.dash\.org\/address\/Xr556RzuwX6hg5EGpkybbv5RanJoZN17kW$/,
+  /^https:\/\/etherscan\.io\/address\/0x0f933ab9fcaaa782d0279c300d73750e1311eae6$/,
+  /^http:\/\/shop\.spreadshirt\.com\/juiceshop$/,
+  /^http:\/\/shop\.spreadshirt\.de\/juiceshop$/,
+  /^https:\/\/www\.stickeryou\.com\/products\/owasp-juice-shop\/794$/,
+  /^http:\/\/leanpub\.com\/juice-shop$/
+];
 
-export const isRedirectAllowed = (url: string) => {
-  let allowed = false
-  for (const allowedUrl of redirectAllowlist) {
-    allowed = allowed || url.includes(allowedUrl) // vuln-code-snippet vuln-line redirectChallenge
-  }
-  return allowed
-}
+
+export const isRedirectAllowed = (url: string) => redirectAllowlist.some((_url) =>
+  _url.test(url))
 // vuln-code-snippet end redirectCryptoCurrencyChallenge redirectChallenge
 
 export const roles = {
